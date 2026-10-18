@@ -416,8 +416,10 @@ export async function apiResponse<T>(run: () => Promise<T>): Promise<Response> {
     if (!known)
       console.error(
         "[Offscript] Unexpected API failure:",
-        error instanceof Error ? error.name : "Unknown error",
+        error instanceof Error ? `${error.name}: ${error.message}\n${error.stack ?? ""}` : String(error),
       );
+    else if (error.status >= 500 || error.code.startsWith("AI_") || error.code.startsWith("RESEARCH_"))
+      console.error(`[Offscript] API error ${error.status} ${error.code}: ${error.message}`);
     return Response.json(
       {
         error: known

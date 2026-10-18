@@ -1,6 +1,16 @@
 import { GoogleGenAI, Type, type Schema } from "@google/genai";
 import type { z } from "zod";
+import {
+  describeResponse,
+  logDebug,
+  logError,
+  logInfo,
+  logWarn,
+  nextCallId,
+  preview,
+} from "./gemini-log";
 import { PERSPECTIVES } from "./perspectives";
+import { callCustomEndpoint, customEndpointUrl, schemaToJsonSchemaText, toJsonText } from "./custom-llm";
 import type {
   Brief,
   Concept,
@@ -23,7 +33,7 @@ import {
 
 export const MODEL = "gemini-3.8-flash";
 export function isConfigured() {
-  return Boolean(process.env.GEMINI_API_KEY?.trim());
+  return Boolean(process.env.GEMINI_API_KEY?.trim() || customEndpointUrl());
 }
 const string = { type: Type.STRING };
 const strings = { type: Type.ARRAY, items: string };
@@ -169,6 +179,22 @@ Avoid generic AI assistants and generic chatbot products. Prefer a concrete inte
 Use the target user, moment of friction, current workaround and human observations as evidence; distinguish assumptions from facts. Own ideas are starting points, not a restriction on alternatives. Give reasoned assessments of user value, originality relative to the supplied workaround, feasibility with the actual team constraints, and demo clarity. Never invent numerical confidence scores or claim you tested anything or that external integrations already exist. Each perspective must supply an operational mechanism, not a decorative metaphor.
 Return only JSON matching the given schema. Never include Markdown.`;
 
+const CALL_LABELS: Array<[string, string]> = [
+  ["Embody ONLY the supplied perspective", "explore"],
+  ["Replace its repeated mechanism", "explore-retry"],
+  ["Synthesize exactly three", "synthesize"],
+  ["Return one or two useful child", "mutate"],
+  ["Stress-test this exact", "crucible"],
+  ["Assess this existing concept", "assess"],
+  ["Combine these two concepts", "combine"],
+  ["evidence researcher", "research-extract"],
+  ["turn source-linked research", "research-extract"],
+  ["implementation specification", "handoff"],
+];
+function labelFor(systemInstruction: string): string {
+  return CALL_LABELS.find(([needle]) => systemInstruction.includes(needle))?.[1] ?? "structured";
+}
+
 /** Every call uses the requested Gemini model and schema-constrained JSON. */
 export async function generateStructured<T>(
   systemInstruction: string,
@@ -176,15 +202,28 @@ export async function generateStructured<T>(
   responseSchema: Schema,
   validator: z.ZodType<T, z.ZodTypeDef, unknown>,
   temperature = 0.85,
-  options: { abortSignal?: AbortSignal } = {},
+  options: { abortSignal?: AbortSignal; label?: string } = {},
 ): Promise<T> {
+  const id = nextCallId(options.label ?? labelFor(systemInstruction));
+  const endpoint = customEndpointUrl();
+  if (endpoint) {
+    return generateViaEndpoint(id, endpoint, systemInstruction, prompt, responseSchema, validator, options.abortSignal);
+  }
   const apiKey = process.env.GEMINI_API_KEY?.trim();
-  if (!apiKey)
+  if (!apiKey) {
+    logError(id, "GEMINI_API_KEY is missing or empty on the server");
     throw new ApiError(
       503,
       "Live AI needs a GEMINI_API_KEY on the server. Switch to Demo mode to explore the complete workshop now.",
       "AI_NOT_CONFIGURED",
     );
+  }
+  logInfo(id, "start", {
+    model: MODEL,
+    keyLength: apiKey.length,
+    promptChars: prompt.length,
+    systemChars: systemInstruction.length,
+  });
   const ai = new GoogleGenAI({ apiKey, httpOptions: { timeout: 55_000 } });
   let correction = "";
   // A malformed response gets one constrained repair; provider failures never silently become demo output.
@@ -192,6 +231,8 @@ export async function generateStructured<T>(
     if (options.abortSignal?.aborted)
       throw new ApiError(504, "Gemini took too long. Retry this step.", "AI_TIMEOUT");
     let response;
+    const startedAt = Date.now();
+    logDebug(id, `attempt ${attempt + 1} request`, { prompt: preview(prompt, 800) });
     try {
       response = await ai.models.generateContent({
         model: MODEL,
@@ -211,6 +252,11 @@ export async function generateStructured<T>(
         error && typeof error === "object" && "status" in error
           ? Number(error.status)
           : 0;
+      logError(id, `provider call failed after ${Date.now() - startedAt}ms (attempt ${attempt + 1})`, error, {
+        model: MODEL,
+        httpStatus: status || undefined,
+        aborted: options.abortSignal?.aborted,
+      });
       if (status === 429)
         throw new ApiError(
           429,
@@ -240,22 +286,98 @@ export async function generateStructured<T>(
         timedOut ? "AI_TIMEOUT" : "AI_PROVIDER_ERROR",
       );
     }
+    const meta = describeResponse(response);
+    const finishReason = meta.finishReason as string | undefined;
+    const text = response.text || "";
+    const problematic = (finishReason && finishReason !== "STOP") || !text || meta.promptFeedback;
+    (problematic ? logWarn : logInfo)(id, `response in ${Date.now() - startedAt}ms (attempt ${attempt + 1})`, {
+      ...meta,
+      textChars: text.length,
+    });
+    logDebug(id, "response text", { text: preview(text, 1500) });
     let parsed: unknown;
     try {
-      parsed = JSON.parse(response.text || "{}");
-    } catch {
+      parsed = JSON.parse(text || "{}");
+    } catch (parseError) {
+      logWarn(id, "response was not valid JSON", {
+        finishReason,
+        textChars: text.length,
+        parseError: preview(parseError instanceof Error ? parseError.message : String(parseError), 200),
+        head: preview(text.slice(0, 300), 300),
+        tail: preview(text.slice(-200), 200),
+      });
       correction = "Response was not valid JSON.";
       continue;
     }
     const result = validator.safeParse(parsed);
-    if (result.success) return result.data;
+    if (result.success) {
+      logInfo(id, `ok (attempt ${attempt + 1})`);
+      return result.data;
+    }
+    logWarn(id, `schema/validation failed (attempt ${attempt + 1})`, {
+      issues: result.error.issues.slice(0, 10).map((issue) => `${issue.path.join(".") || "(root)"}: ${issue.message}`),
+      issueCount: result.error.issues.length,
+    });
     correction = `${result.error.issues.map((issue) => `${issue.path.join(".")}: ${issue.message}`).join("; ")} Previous result: ${JSON.stringify(parsed).slice(0, 12000)}`;
   }
+  logError(id, "gave up: invalid output on both attempts");
   throw new ApiError(
     502,
     "Gemini returned an incomplete result twice. Please retry this step or select Demo mode.",
     "AI_INVALID_OUTPUT",
   );
+}
+
+/** Same validate-and-repair loop as Gemini, but through a plain {prompt} -> text endpoint (LLM_ENDPOINT_URL). */
+async function generateViaEndpoint<T>(
+  id: string,
+  endpoint: string,
+  systemInstruction: string,
+  prompt: string,
+  responseSchema: Schema,
+  validator: z.ZodType<T, z.ZodTypeDef, unknown>,
+  abortSignal?: AbortSignal,
+): Promise<T> {
+  const base = `${systemInstruction}
+
+Respond with ONLY one JSON value that matches this JSON schema. No Markdown, no code fences, no commentary before or after.
+JSON schema: ${schemaToJsonSchemaText(responseSchema)}
+
+${prompt}`;
+  let correction = "";
+  for (let attempt = 0; attempt < 2; attempt++) {
+    if (abortSignal?.aborted) throw new ApiError(504, "The AI endpoint took too long. Retry this step.", "AI_TIMEOUT");
+    const full = attempt
+      ? `${base}\nYour previous response failed validation. Repair these specific problems: ${correction}. Strictly check field types, array lengths, word limits and banned words. Return the entire corrected JSON.`
+      : base;
+    const raw = await callCustomEndpoint(id, endpoint, full, abortSignal);
+    const text = toJsonText(raw);
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(text || "{}");
+    } catch (parseError) {
+      logWarn(id, "endpoint response was not valid JSON", {
+        textChars: raw.length,
+        parseError: preview(parseError instanceof Error ? parseError.message : String(parseError), 200),
+        head: preview(raw.slice(0, 300), 300),
+        tail: preview(raw.slice(-200), 200),
+      });
+      correction = "Response was not valid JSON.";
+      continue;
+    }
+    const result = validator.safeParse(parsed);
+    if (result.success) {
+      logInfo(id, `ok via custom endpoint (attempt ${attempt + 1})`);
+      return result.data;
+    }
+    logWarn(id, `schema/validation failed (attempt ${attempt + 1})`, {
+      issues: result.error.issues.slice(0, 10).map((issue) => `${issue.path.join(".") || "(root)"}: ${issue.message}`),
+      issueCount: result.error.issues.length,
+    });
+    correction = `${result.error.issues.map((issue) => `${issue.path.join(".")}: ${issue.message}`).join("; ")} Previous result: ${JSON.stringify(parsed).slice(0, 12000)}`;
+  }
+  logError(id, "gave up: invalid output on both attempts (custom endpoint)");
+  throw new ApiError(502, "The AI endpoint returned an incomplete result twice. Please retry this step or select Demo mode.", "AI_INVALID_OUTPUT");
 }
 
 export function canonicalPerspectives(requested: Perspective[]): Perspective[] {

@@ -1,4 +1,5 @@
 import { GoogleGenAI, Type, type Candidate, type Schema } from "@google/genai";
+import { describeResponse, logDebug, logError, logInfo, logWarn, nextCallId, preview } from "./gemini-log";
 import { generateStructured, MODEL } from "./ai";
 import { ApiError } from "./validation";
 import {
@@ -155,10 +156,16 @@ export async function withResearchDeadline<T>(task: (signal: AbortSignal) => Pro
 
 export async function researchLive(request: ResearchRequest): Promise<ResearchRun> {
   const input = researchRequestSchema.parse(request);
+  const id = nextCallId("research-grounded");
   const apiKey = process.env.GEMINI_API_KEY?.trim();
-  if (!apiKey) throw new ApiError(503, "Live research needs a GEMINI_API_KEY on the server. Demo mode shows clearly labeled illustrative examples.", "AI_NOT_CONFIGURED");
+  if (!apiKey) {
+    logError(id, "GEMINI_API_KEY is missing or empty on the server");
+    throw new ApiError(503, "Live research needs a GEMINI_API_KEY on the server. Demo mode shows clearly labeled illustrative examples.", "AI_NOT_CONFIGURED");
+  }
+  logInfo(id, "start", { model: MODEL, mode: input.mode, urls: input.urls.length, queryChars: input.query.length, keyLength: apiKey.length });
   const ai = new GoogleGenAI({ apiKey, httpOptions: { timeout: 45_000 } });
   let candidate: Candidate | undefined;
+  const startedAt = Date.now();
   try {
     const response = await withResearchDeadline((abortSignal) => ai.models.generateContent({
       model: MODEL,
@@ -178,8 +185,19 @@ export async function researchLive(request: ResearchRequest): Promise<ResearchRu
       },
     }), 45_000);
     candidate = response.candidates?.[0];
+    const meta = describeResponse(response);
+    (candidate ? logInfo : logWarn)(id, `response in ${Date.now() - startedAt}ms`, {
+      ...meta,
+      textChars: response.text?.length ?? 0,
+      groundingQueries: candidate?.groundingMetadata?.webSearchQueries?.length ?? 0,
+      groundingChunks: candidate?.groundingMetadata?.groundingChunks?.length ?? 0,
+      urlContext: candidate?.urlContextMetadata?.urlMetadata?.map((item) => ({ url: item.retrievedUrl, status: item.urlRetrievalStatus })),
+    });
+    logDebug(id, "response text", { text: preview(response.text ?? "", 1500) });
   } catch (error) {
-    throw providerError(error);
+    const mapped = providerError(error);
+    logError(id, `provider call failed after ${Date.now() - startedAt}ms -> ${mapped.code}`, error, { model: MODEL, mode: input.mode });
+    throw mapped;
   }
   if (!candidate) throw new ApiError(502, "Research returned no readable response. Retry with a specific public source or a narrower query.", "RESEARCH_NO_SOURCES");
   const retrieved = collectRetrievedResearch(candidate, input.mode);
@@ -370,7 +388,11 @@ export async function researchWithFallback(request: ResearchRequest): Promise<Re
       "AI_NOT_CONFIGURED", "AI_RATE_LIMITED", "AI_ACCESS_DENIED", "AI_MODEL_UNAVAILABLE", "AI_TIMEOUT", "AI_PROVIDER_ERROR", "AI_INVALID_OUTPUT",
       "RESEARCH_QUOTA_EXCEEDED", "RESEARCH_RATE_LIMITED", "RESEARCH_TOOL_UNAVAILABLE", "RESEARCH_TIMEOUT", "RESEARCH_PROVIDER_ERROR", "RESEARCH_NO_SOURCES", "RESEARCH_ATTRIBUTION_TOO_LARGE",
     ]);
-    if (!(error instanceof ApiError) || !eligible.has(error.code)) throw error;
+    if (!(error instanceof ApiError) || !eligible.has(error.code)) {
+      logError("research-fallback", "research failed and is not eligible for fallback", error);
+      throw error;
+    }
+    logWarn("research-fallback", `Gemini research failed (${error.code}: ${error.message}); falling back to DuckDuckGo`);
     const reason = error.code === "RESEARCH_QUOTA_EXCEEDED" ? "Gemini's research quota is exhausted"
       : error.code === "AI_NOT_CONFIGURED" ? "Gemini is not configured on this server"
       : error.code.includes("TIMEOUT") ? "Gemini extraction timed out" : "Gemini extraction is currently unavailable";
