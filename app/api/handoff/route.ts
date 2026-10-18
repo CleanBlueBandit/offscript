@@ -1,4 +1,4 @@
-import { Type, type Schema } from "@google/genai";
+import { Type, type Schema } from "@/lib/schema-types";
 import { z } from "zod";
 import { generateStructured } from "@/lib/ai";
 import { composeHandoffPrompt, demoEngineeringSpec, handoffFingerprint } from "@/lib/handoff";

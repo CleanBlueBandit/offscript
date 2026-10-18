@@ -20,9 +20,9 @@ export function nextCallId(label: string): string {
 }
 
 function redact(text: string): string {
-  const key = process.env.GEMINI_API_KEY?.trim();
   let out = text;
-  if (key) out = out.split(key).join("[REDACTED]");
+  for (const key of [process.env.GEMINI_API_KEY?.trim(), process.env.LLM_ENDPOINT_TOKEN?.trim()])
+    if (key) out = out.split(key).join("[REDACTED]");
   // Catch keys passed in URLs or echoed by the provider.
   return out.replace(/AIza[0-9A-Za-z_-]{20,}/g, "[REDACTED]");
 }

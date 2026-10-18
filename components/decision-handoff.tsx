@@ -166,7 +166,7 @@ function DecisionHandoffEditor({ brief, concept, plan, decision, handoff, demo, 
           <label>Prepare for<select value={agent} onChange={(event) => setAgent(event.target.value as HandoffAgent)} disabled={busy}><option value="codex">Codex</option><option value="claude-code">Claude Code</option><option value="general">Any coding agent</option></select></label>
           <button className="button button-lime" type="button" onClick={generate} disabled={!confirmed || busy}>{busy ? <Loader2 className="spin" size={16} aria-hidden="true" /> : <FileCode2 size={16} aria-hidden="true" />}{busy ? "Preparing build prompt…" : handoff ? "Regenerate build prompt" : "Create build prompt"}</button>
         </div>
-        <p className="handoff-mode-note">{demo ? "Demo mode creates a detailed, editable template. It does not use live AI." : "Live mode uses Gemini to propose a specification around your confirmed decision. Review it before building."}{!confirmed && " Confirm the decision above to continue."}</p>
+        <p className="handoff-mode-note">{demo ? "Demo mode creates a detailed, editable template. It does not use live AI." : "Live mode uses AI to propose a specification around your confirmed decision. Review it before building."}{!confirmed && " Confirm the decision above to continue."}</p>
       </div>
       {error && <p className="handoff-error" role="alert">{error}</p>}
       {busy && <p className="handoff-loading" role="status">Preparing the engineering details. Your confirmed decision is saved.</p>}

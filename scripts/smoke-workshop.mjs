@@ -89,7 +89,7 @@ assert.equal(enriched.concept.pitch, legacy.pitch);
 assert(enriched.concept.assessment.feasibility);
 await post("combine", { ...base, concepts: [concepts[0], concepts[0]] }, 400);
 const status = await (await fetch(`${origin}/api/status`)).json();
-assert.equal(status.model, "gemini-3.8-flash");
+assert.equal(status.model, "lovable-ai");
 if (!status.configured)
   await post("synthesize", { ...base, demo: false, ingredients }, 503);
 console.log(

@@ -299,7 +299,7 @@ export default function Workshop() {
   ).length;
   const explorationLabel =
     liveExplorations === state.explorations.length
-      ? "Live Gemini ingredients"
+      ? "Live AI ingredients"
       : liveExplorations === 0
         ? "Demo ingredients"
         : "Demo + live ingredients";
@@ -1680,11 +1680,11 @@ export default function Workshop() {
                     >
                       <Sparkles size={22} />
                       <span>
-                        <strong>Live Gemini 3.8 Flash</strong>
+                        <strong>Live AI</strong>
                         <small>
                           {configured
                             ? "Independent live generations, tailored to your brief."
-                            : "Set GEMINI_API_KEY on the server to connect live AI."}
+                            : "Set LLM_ENDPOINT_URL on the server to connect live AI."}
                         </small>
                       </span>
                       {!demo && <Check size={17} />}

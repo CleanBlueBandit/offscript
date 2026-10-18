@@ -458,10 +458,10 @@ test("canonical lenses reject duplicates and replace client-supplied prompt fiel
 });
 
 test("live exploration without a key fails explicitly instead of generating demo output", async () => {
-  const existing = process.env.GEMINI_API_KEY;
-  delete process.env.GEMINI_API_KEY;
+  const existing = process.env.LLM_ENDPOINT_URL;
+  delete process.env.LLM_ENDPOINT_URL;
   try {
-    assert.equal(MODEL, "gemini-3.8-flash");
+    assert.equal(MODEL, "lovable-ai");
     await assert.rejects(
       exploreLive(brief, PERSPECTIVES.slice(0, 15)),
       (error) =>
@@ -470,39 +470,33 @@ test("live exploration without a key fails explicitly instead of generating demo
         error.code === "AI_NOT_CONFIGURED",
     );
   } finally {
-    if (existing === undefined) delete process.env.GEMINI_API_KEY;
-    else process.env.GEMINI_API_KEY = existing;
+    if (existing === undefined) delete process.env.LLM_ENDPOINT_URL;
+    else process.env.LLM_ENDPOINT_URL = existing;
   }
 });
 
-async function mockGemini<T>(
+async function mockEndpoint<T>(
   reply: (body: Record<string, unknown>, index: number) => unknown,
   run: (requests: Record<string, unknown>[]) => Promise<T>,
 ) {
   const originalFetch = globalThis.fetch;
-  const originalKey = process.env.GEMINI_API_KEY;
+  const originalKey = process.env.LLM_ENDPOINT_URL;
   const requests: Record<string, unknown>[] = [];
-  process.env.GEMINI_API_KEY = "test-key-never-sent";
+  process.env.LLM_ENDPOINT_URL = "https://llm.test/api/public/ask";
   globalThis.fetch = async (input, init) => {
     const request = new Request(input, init);
-    assert.ok(request.url.includes("generativelanguage.googleapis.com"));
+    assert.equal(request.url, "https://llm.test/api/public/ask");
     const body = (await request.json()) as Record<string, unknown>;
     requests.push(body);
     const result = reply(body, requests.length - 1);
-    return Response.json({
-      candidates: [
-        {
-          content: { role: "model", parts: [{ text: JSON.stringify(result) }] },
-        },
-      ],
-    });
+    return Response.json({ text: JSON.stringify(result) });
   };
   try {
     return await run(requests);
   } finally {
     globalThis.fetch = originalFetch;
-    if (originalKey === undefined) delete process.env.GEMINI_API_KEY;
-    else process.env.GEMINI_API_KEY = originalKey;
+    if (originalKey === undefined) delete process.env.LLM_ENDPOINT_URL;
+    else process.env.LLM_ENDPOINT_URL = originalKey;
   }
 }
 
@@ -514,7 +508,7 @@ test("live synthesis repairs duplicate mechanisms once and then fails explicitly
   const repeated = {
     concepts: [concepts[0], { ...concepts[0], title: "Renamed" }, concepts[2]],
   };
-  await mockGemini(
+  await mockEndpoint(
     (_, index) => (index === 0 ? repeated : { concepts }),
     async (requests) => {
       const result = await synthesizeLive(brief, ingredients);
@@ -523,7 +517,7 @@ test("live synthesis repairs duplicate mechanisms once and then fails explicitly
       assert.ok(JSON.stringify(requests[1]).includes("repeat a mechanism"));
     },
   );
-  await mockGemini(
+  await mockEndpoint(
     () => repeated,
     async (requests) => {
       await assert.rejects(
@@ -554,7 +548,7 @@ test("live exploration keeps first calls independent and rerolls only a repeated
       "Save an interrupted action and restore its exact state when the context returns.",
     flip: "Resume without starting over.",
   };
-  await mockGemini(
+  await mockEndpoint(
     (_, index) => (index < 2 ? first : different),
     async (requests) => {
       const result = await exploreLive(brief, perspectives);

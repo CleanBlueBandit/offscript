@@ -251,7 +251,7 @@ function prototypeArchitecture(brief: Brief, theme: Theme): string[] {
       "Define one typed adapter for a source the team already has permission to access. Validate its JSON with Zod in TypeScript or Pydantic in Python; use labeled local fixtures until it is connected.",
     ]),
     "Implement a deterministic decide(context) function returning action, reason, confidence, and undo data. Reject stale or missing signals; test the same rule against normal, changed, and failed-input fixtures.",
-    "Use Gemini only if bounded interpretation is necessary, with schema-validated JSON. Keep the final action rule deterministic and show which source fields caused the decision.",
+    "Use an LLM only if bounded interpretation is necessary, with schema-validated JSON. Keep the final action rule deterministic and show which source fields caused the decision.",
     "Persist only opted-in context and an action log; keep provider credentials on the server. Include reset and undo. These are proposed integrations, not services already connected to this demo.",
   ];
 }

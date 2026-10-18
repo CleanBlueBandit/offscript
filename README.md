@@ -29,13 +29,15 @@ npm run build:next
 npm run start:next
 ```
 
-Use **Workshop settings → Demo workshop** to try the complete interaction without external generation. To enable live generation, copy `.env.example` to `.env.local`, replace the placeholder with a Gemini API key, and restart the server:
+Use **Workshop settings → Demo workshop** to try the complete interaction without external generation. To enable live generation, copy `.env.example` to `.env.local`, set your AI endpoint, and restart the server:
 
 ```dotenv
-GEMINI_API_KEY=your_server_side_gemini_api_key
+LLM_ENDPOINT_URL=https://your-project.lovable.app/api/public/ask
+# Optional Bearer token if you protect the endpoint
+# LLM_ENDPOINT_TOKEN=
 ```
 
-Choose **Live Gemini 3.8 Flash** in Workshop settings after restarting. The key stays on the server; never give it a `NEXT_PUBLIC_` prefix. The account must have access to `gemini-3.8-flash`. Provider errors are displayed explicitly; live failures do not silently substitute demo output. No live-provider verification is claimed by this README.
+The endpoint must accept `POST {"prompt": "..."}` and return the model's answer as text or JSON. Choose **Live AI** in Workshop settings after restarting. Never give these variables a `NEXT_PUBLIC_` prefix. Provider errors are displayed explicitly; live failures do not silently substitute demo output. No live-provider verification is claimed by this README.
 
 ## Sites hosting runtime
 
@@ -62,13 +64,13 @@ node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1
 npm run start
 ```
 
-Configure `GEMINI_API_KEY` as a server-side secret in the hosting environment for live hosted generation. A local `.env.local` file does not configure the published site's secrets.
+Configure `LLM_ENDPOINT_URL` as a server-side secret in the hosting environment for live hosted generation. A local `.env.local` file does not configure the published site's secrets.
 
 A workshop invitation grants access to a room only after the visitor passes the site's access policy. An owner-private Sites deployment remains owner-private: forwarding the room link cannot let a teammate bypass that restriction. Use a site access policy appropriate for the intended team before testing invitations across accounts.
 
 ## Research and coding-agent handoff
 
-**Research** sits above Briefing. Explore the web, past hackathons, or up to five public website URLs. Live research uses Gemini Google Search and URL Context, then extracts source-linked features, the problems they address, and possible adaptations. Search-only sources are labeled separately from retrieved pages. Save up to twelve findings; their sources travel with the brief, concept generation, and build prompt. Public access restrictions and provider limits may prevent retrieval. Research always searches real sources, independently of the workshop generation mode. If Gemini is unavailable, DuckDuckGo public search returns clearly labeled idea leads with source titles, snippets, and URLs. These leads do not claim to have extracted the full page or its mechanism. Older demo results remain labeled as illustrative.
+**Research** sits above Briefing. Explore the web, past hackathons, or up to five public website URLs. Live research uses DuckDuckGo public search and returns source-linked idea leads. Search-only sources are labeled separately from retrieved pages. Save up to twelve findings; their sources travel with the brief, concept generation, and build prompt. Public access restrictions and provider limits may prevent retrieval. Research always searches real sources, independently of the workshop generation mode. Public search returns clearly labeled idea leads with source titles, snippets, and URLs. These leads do not claim to have extracted the full page or its mechanism. Older demo results remain labeled as illustrative.
 
 In **Decide & build**, save a team choice, then explicitly confirm the final problem, target user, solution, rationale, and success criteria. Create a detailed prompt for Codex, Claude Code, or any coding agent. It includes MVP scope, non-goals, user flows, screens, architecture, data models, API contracts, integration/mock boundaries, implementation milestones, acceptance criteria, tests, edge cases, accessibility, security, and source references. Copy it or download Markdown. Input changes mark previous prompts as outdated and disable export until regeneration.
 

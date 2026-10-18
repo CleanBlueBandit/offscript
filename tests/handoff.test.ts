@@ -117,8 +117,8 @@ test("API rejects a mismatched concept and returns a current prompt for a valid 
 });
 
 test("live mode without a configured provider fails rather than silently generating a demo", async () => {
-  const previous = process.env.GEMINI_API_KEY;
-  delete process.env.GEMINI_API_KEY;
+  const previous = process.env.LLM_ENDPOINT_URL;
+  delete process.env.LLM_ENDPOINT_URL;
   try {
     const response = await POST(new Request("http://localhost/api/handoff", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...input, demo: false }) }));
     assert.equal(response.status, 503);
@@ -126,7 +126,7 @@ test("live mode without a configured provider fails rather than silently generat
     assert.equal(body.code, "AI_NOT_CONFIGURED");
     assert.equal(body.handoff, undefined);
   } finally {
-    if (previous === undefined) delete process.env.GEMINI_API_KEY;
-    else process.env.GEMINI_API_KEY = previous;
+    if (previous === undefined) delete process.env.LLM_ENDPOINT_URL;
+    else process.env.LLM_ENDPOINT_URL = previous;
   }
 });
