@@ -106,7 +106,7 @@ export function ResearchWorkbench({ research = emptyResearch, onUpdate, onStartB
         </label>
       </details>}
       <div className="research-submit-row">
-        <p>Gemini searches Google and cites the sources behind every finding.</p>
+        <p>The AI searches the live web and lists its sources. Open each link to verify.</p>
         <button className="button button-lime" type="submit" disabled={pending || query.trim().length < 3}>
           {pending ? <Loader2 size={16} className="spin" /> : <Search size={16} />}
           {pending ? "Finding ideas…" : mode === "urls" ? "Find ideas on these sites" : "Find ideas"}
@@ -122,7 +122,7 @@ export function ResearchWorkbench({ research = emptyResearch, onUpdate, onStartB
         </div>
         {run ? <>
           <p className="research-summary">{run.summary}</p>
-          <p className="research-meta">{run.source === "demo" ? "Illustrative example" : run.engine === "public-web" ? "Live web results · DuckDuckGo" : "Gemini + Google Search"} · {run.sources.length} sources · {new Date(run.createdAt).toLocaleDateString()}</p>
+          <p className="research-meta">{run.source === "demo" ? "Illustrative example" : run.engine === "public-web" ? "Live web results · DuckDuckGo" : "Live web search (AI)"} · {run.sources.length} sources · {new Date(run.createdAt).toLocaleDateString()}</p>
           {run.limitations.length > 0 && <details className="research-limitations"><summary>Research limits and missing information</summary><ul>{run.limitations.map((item, i) => <li key={i}>{item}</li>)}</ul></details>}
           <div className="research-findings">{run.findings.map((finding) => {
             const saved = research.saved.some((item) => item.id === finding.id);

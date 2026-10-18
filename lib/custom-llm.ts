@@ -46,9 +46,10 @@ export async function callCustomEndpoint(
   url: string,
   prompt: string,
   abortSignal?: AbortSignal,
+  options: { search?: boolean; timeoutMs?: number } = {},
 ): Promise<string> {
   const startedAt = Date.now();
-  const timeout = AbortSignal.timeout(55_000);
+  const timeout = AbortSignal.timeout(options.timeoutMs ?? 55_000);
   const signal = abortSignal && "any" in AbortSignal ? AbortSignal.any([abortSignal, timeout]) : timeout;
   const token = process.env.LLM_ENDPOINT_TOKEN?.trim();
   logInfo(id, "custom endpoint request", { host: new URL(url).host, promptChars: prompt.length });
@@ -57,7 +58,7 @@ export async function callCustomEndpoint(
     res = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
-      body: JSON.stringify({ prompt }),
+      body: JSON.stringify(options.search ? { prompt, search: true } : { prompt }),
       signal,
     });
   } catch (error) {
