@@ -382,6 +382,11 @@ export async function researchPublicWeb(request: ResearchRequest, reason = "Gemi
 
 /** Prefer Gemini extraction; keep real search usable when model access/quota is unavailable. */
 export async function researchWithFallback(request: ResearchRequest): Promise<ResearchRun> {
+  // Gemini grounded research is optional. Without a Gemini key, go straight to public web search.
+  if (!process.env.GEMINI_API_KEY?.trim()) {
+    logInfo("research-fallback", "no GEMINI_API_KEY; using public web search (Gemini grounded research skipped)");
+    return researchPublicWeb(request, "Gemini grounded research is not enabled on this server");
+  }
   try { return await researchLive(request); }
   catch (error) {
     const eligible = new Set([
