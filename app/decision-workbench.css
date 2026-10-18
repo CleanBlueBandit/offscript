@@ -1,0 +1,589 @@
+.decision-workbench {
+  margin-top: 32px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+.decision-heading-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+.decision-heading-row h2,
+.evaluation-intro h2 {
+  font-size: 21px;
+  line-height: 1.25;
+  letter-spacing: -0.45px;
+  font-weight: 600;
+}
+.decision-heading-row p,
+.evaluation-intro p {
+  color: var(--muted);
+  margin-top: 7px;
+  max-width: 70ch;
+}
+.decision-commit-status {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 6px;
+  max-width: 38%;
+  padding: 8px 10px;
+  font-size: 12px;
+  color: #275d42;
+  background: #edf6ef;
+  border-radius: 7px;
+}
+.decision-caveat {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 18px 0 10px;
+}
+.decision-compact-controls,
+.decision-compact-mechanism {
+  display: none;
+}
+.decision-comparison,
+.evaluation-records {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+  scrollbar-color: #b9bcb9 var(--panel2);
+}
+.decision-comparison:focus-visible,
+.evaluation-records:focus-visible,
+.evaluation-lab summary:focus-visible,
+.evaluation-lab select:focus-visible {
+  outline: 3px solid #2864d880;
+  outline-offset: 3px;
+}
+.decision-comparison table {
+  min-width: 1080px;
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.decision-comparison th,
+.decision-comparison td {
+  text-align: left;
+  vertical-align: top;
+  padding: 16px;
+  border-bottom: 1px solid var(--line);
+  overflow-wrap: anywhere;
+}
+.decision-comparison thead th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  color: var(--muted);
+  font-weight: 500;
+  background: var(--panel2);
+}
+.decision-comparison th:first-child {
+  width: 20%;
+}
+.decision-comparison tbody th {
+  font-weight: 400;
+}
+.decision-comparison tbody tr:last-child > * {
+  border-bottom: 0;
+}
+.decision-comparison tbody tr[data-selected="true"] {
+  background: #f5f8ff;
+}
+.decision-concept-select {
+  display: inline-flex;
+  gap: 8px;
+  text-align: left;
+  align-items: baseline;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 4px 0;
+  min-height: 32px;
+}
+.decision-concept-select:hover {
+  color: var(--accent-hover);
+}
+.decision-radio {
+  width: 16px;
+  height: 16px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid #a5aaa9;
+  border-radius: 50%;
+  flex-shrink: 0;
+  align-self: center;
+  background: white;
+}
+[aria-pressed="true"] > .decision-radio {
+  color: white;
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.decision-mechanism {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+  margin-top: 6px;
+}
+.decision-chosen-label {
+  display: inline-block;
+  color: #275d42;
+  margin-top: 8px;
+  font-size: 11px;
+}
+.decision-unassessed {
+  color: var(--muted);
+  font-style: italic;
+}
+.decision-next-step {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 22px 0 0;
+}
+.decision-next-step strong {
+  font-size: 15px;
+  font-weight: 600;
+}
+.decision-next-step p {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--muted);
+  max-width: 58ch;
+  margin-top: 4px;
+}
+.decision-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.decision-empty {
+  margin-top: 20px;
+  padding: 22px 0;
+  color: var(--muted);
+}
+.decision-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.evaluation-lab {
+  margin-top: 32px;
+  border-top: 1px solid var(--line);
+  padding-top: 4px;
+}
+.evaluation-lab > summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 0;
+  cursor: pointer;
+  list-style: none;
+  font-weight: 500;
+}
+.evaluation-lab summary::-webkit-details-marker {
+  display: none;
+}
+.evaluation-summary-note {
+  font-weight: 400;
+  color: var(--muted);
+  font-size: 12px;
+  margin-left: auto;
+}
+.evaluation-chevron {
+  transition: transform 160ms ease-out;
+  color: var(--muted);
+}
+.evaluation-lab[open] > summary .evaluation-chevron {
+  transform: rotate(180deg);
+}
+.evaluation-body {
+  padding: 6px 0 24px;
+}
+.evaluation-intro {
+  margin-bottom: 20px;
+}
+.evaluation-intro h2 {
+  font-size: 18px;
+}
+.evaluation-intro p {
+  font-size: 13px;
+}
+.evaluation-method {
+  max-width: 78ch;
+  margin-bottom: 20px;
+  font-size: 13px;
+}
+.evaluation-method > summary {
+  display: list-item;
+  list-style: disclosure-closed;
+  cursor: pointer;
+  padding: 4px 0;
+  font-weight: 500;
+}
+.evaluation-method[open] > summary {
+  list-style: disclosure-open;
+}
+.evaluation-method ol {
+  padding-left: 21px;
+  margin: 10px 0 0;
+}
+.evaluation-method li {
+  margin-bottom: 9px;
+  padding-left: 3px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+.evaluation-toolbar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.evaluation-form {
+  padding: 22px;
+  margin-bottom: 22px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.evaluation-form h3,
+.evaluation-blind-review h3 {
+  font-size: 16px;
+  letter-spacing: -0.2px;
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+.evaluation-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 17px 20px;
+}
+.evaluation-form label,
+.evaluation-review-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  min-width: 0;
+}
+.evaluation-form input:not([type="checkbox"]),
+.evaluation-form textarea,
+.evaluation-form select,
+.evaluation-review-picker select,
+.evaluation-records select {
+  width: 100%;
+  min-height: 40px;
+  padding: 9px 11px;
+  border: 1px solid #d9dcd6;
+  border-radius: 8px;
+  color: var(--text);
+  background: #fdfdfa;
+  font-size: 13px;
+  font-weight: 400;
+}
+.evaluation-form input,
+.evaluation-form textarea {
+  caret-color: var(--accent);
+}
+.evaluation-form textarea {
+  resize: vertical;
+}
+.evaluation-field-wide {
+  grid-column: 1 / -1;
+}
+.evaluation-field-hint,
+.evaluation-optional {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+.evaluation-form-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 20px;
+}
+.evaluation-records table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.evaluation-records caption {
+  text-align: left;
+  padding: 12px 15px;
+  color: var(--muted);
+  border-bottom: 1px solid var(--line);
+}
+.evaluation-records th,
+.evaluation-records td {
+  padding: 12px 15px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--line);
+}
+.evaluation-records th {
+  font-weight: 500;
+}
+.evaluation-records thead {
+  background: var(--panel2);
+  color: var(--muted);
+}
+.evaluation-records tbody tr:last-child > * {
+  border-bottom: 0;
+}
+.evaluation-records small {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 400;
+  margin-top: 3px;
+}
+.evaluation-records select {
+  width: auto;
+  min-width: 130px;
+  padding: 6px;
+  min-height: 34px;
+  font-size: 12px;
+}
+.evaluation-reviewed {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 5px;
+  align-items: center;
+}
+.evaluation-reviewed small {
+  flex-basis: 100%;
+}
+.evaluation-empty {
+  padding: 20px 0 8px;
+  color: var(--muted);
+  max-width: 70ch;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.evaluation-privacy {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.evaluation-message:not(:empty) {
+  margin: 12px 0;
+  color: #275d42;
+  font-size: 13px;
+}
+.evaluation-error {
+  margin: 12px 0;
+  padding: 12px;
+  background: #fff3e3;
+  color: #805315;
+  border-radius: 8px;
+  font-size: 13px;
+}
+.evaluation-blind-review > h3 {
+  margin: 22px 0 8px;
+}
+.evaluation-blind-review > p {
+  font-size: 13px;
+  color: var(--muted);
+  max-width: 70ch;
+}
+.evaluation-review-picker {
+  margin: 20px 0;
+  max-width: 320px;
+}
+.evaluation-review-idea {
+  padding-bottom: 18px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+.evaluation-ratings {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 20px 0;
+}
+.evaluation-blind-review .evaluation-form > label {
+  margin: 18px 0;
+}
+.evaluation-form .evaluation-blind-confirm {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 9px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+.evaluation-blind-confirm input {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  accent-color: var(--accent);
+}
+@media (max-width: 1350px) {
+  .decision-compact-controls {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 10px 20px;
+    margin: 18px 0 14px;
+  }
+  .decision-compact-controls label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .decision-compact-controls select {
+    min-height: 40px;
+    min-width: 210px;
+    padding: 8px 32px 8px 11px;
+    border: 1px solid #d9dcd6;
+    border-radius: 8px;
+    background: var(--panel);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 400;
+  }
+  .decision-compact-controls select:focus-visible,
+  .decision-compact-mechanism summary:focus-visible {
+    outline: 3px solid #2864d880;
+    outline-offset: 3px;
+  }
+  .decision-compact-controls p {
+    font-size: 12px;
+    color: var(--muted);
+    padding-bottom: 10px;
+  }
+  .decision-comparison table {
+    min-width: 0;
+    table-layout: fixed;
+    font-size: 13px;
+  }
+  .decision-comparison th:first-child {
+    width: 35%;
+  }
+  .decision-comparison [data-column] {
+    display: none;
+  }
+  .decision-comparison [data-criterion="userValue"] [data-column="userValue"],
+  .decision-comparison
+    [data-criterion="originality"]
+    [data-column="originality"],
+  .decision-comparison
+    [data-criterion="feasibility"]
+    [data-column="feasibility"],
+  .decision-comparison
+    [data-criterion="demoClarity"]
+    [data-column="demoClarity"],
+  .decision-comparison
+    [data-criterion="uncertainty"]
+    [data-column="uncertainty"] {
+    display: table-cell;
+  }
+  .decision-mechanism {
+    display: none;
+  }
+  .decision-compact-mechanism {
+    display: block;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 400;
+    margin-top: 8px;
+  }
+  .decision-compact-mechanism summary {
+    cursor: pointer;
+    padding: 3px 0;
+  }
+  .decision-compact-mechanism p {
+    margin-top: 7px;
+    line-height: 1.65;
+  }
+}
+@media (max-width: 1100px) {
+  .decision-next-step {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .decision-heading-row {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .decision-commit-status {
+    max-width: 100%;
+  }
+}
+@media (max-width: 600px) {
+  .decision-comparison th,
+  .decision-comparison td {
+    padding: 13px 12px;
+  }
+  .decision-comparison th:first-child {
+    width: 40%;
+  }
+  .decision-concept-select {
+    font-size: 13px;
+    gap: 6px;
+  }
+  .decision-compact-controls {
+    display: block;
+  }
+  .decision-compact-controls label {
+    max-width: 100%;
+  }
+  .decision-compact-controls select {
+    width: 100%;
+    min-width: 0;
+  }
+  .decision-compact-controls p {
+    padding: 8px 0 0;
+  }
+  .decision-heading-row h2 {
+    font-size: 20px;
+  }
+  .decision-heading-row p {
+    font-size: 13px;
+  }
+  .decision-actions {
+    width: 100%;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .evaluation-summary-note {
+    display: none;
+  }
+  .evaluation-chevron {
+    margin-left: auto;
+  }
+  .evaluation-form {
+    padding: 17px;
+  }
+  .evaluation-fields,
+  .evaluation-ratings {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 15px;
+  }
+  .evaluation-form-actions {
+    flex-wrap: wrap;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .evaluation-chevron {
+    transition: none;
+  }
+}

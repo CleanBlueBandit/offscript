@@ -1,0 +1,359 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-18T03:06:25+04:00",
+  "title": "Design System: Offscript",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Action blue",
+        "tonalRamp": [
+          "oklch(15.00% 0.18901 261.81)",
+          "oklch(26.43% 0.18901 261.81)",
+          "oklch(37.86% 0.18901 261.81)",
+          "oklch(49.29% 0.18901 261.81)",
+          "oklch(60.71% 0.18901 261.81)",
+          "oklch(72.14% 0.18901 261.81)",
+          "oklch(83.57% 0.18901 261.81)",
+          "oklch(95.00% 0.18901 261.81)"
+        ]
+      },
+      "primary-hover": {
+        "role": "primary",
+        "displayName": "Action blue hover",
+        "tonalRamp": [
+          "oklch(15.00% 0.17663 261.95)",
+          "oklch(26.43% 0.17663 261.95)",
+          "oklch(37.86% 0.17663 261.95)",
+          "oklch(49.29% 0.17663 261.95)",
+          "oklch(60.71% 0.17663 261.95)",
+          "oklch(72.14% 0.17663 261.95)",
+          "oklch(83.57% 0.17663 261.95)",
+          "oklch(95.00% 0.17663 261.95)"
+        ]
+      },
+      "primary-soft": {
+        "role": "primary",
+        "displayName": "Selection blue",
+        "tonalRamp": [
+          "oklch(15.00% 0.01733 264.49)",
+          "oklch(26.43% 0.01733 264.49)",
+          "oklch(37.86% 0.01733 264.49)",
+          "oklch(49.29% 0.01733 264.49)",
+          "oklch(60.71% 0.01733 264.49)",
+          "oklch(72.14% 0.01733 264.49)",
+          "oklch(83.57% 0.01733 264.49)",
+          "oklch(95.00% 0.01733 264.49)"
+        ]
+      },
+      "canvas": {
+        "role": "neutral",
+        "displayName": "Warm canvas",
+        "tonalRamp": [
+          "oklch(15.00% 0.00411 91.45)",
+          "oklch(26.43% 0.00411 91.45)",
+          "oklch(37.86% 0.00411 91.45)",
+          "oklch(49.29% 0.00411 91.45)",
+          "oklch(60.71% 0.00411 91.45)",
+          "oklch(72.14% 0.00411 91.45)",
+          "oklch(83.57% 0.00411 91.45)",
+          "oklch(95.00% 0.00411 91.45)"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "White surface",
+        "tonalRamp": [
+          "oklch(15.00% 0.00000 0.00)",
+          "oklch(26.43% 0.00000 0.00)",
+          "oklch(37.86% 0.00000 0.00)",
+          "oklch(49.29% 0.00000 0.00)",
+          "oklch(60.71% 0.00000 0.00)",
+          "oklch(72.14% 0.00000 0.00)",
+          "oklch(83.57% 0.00000 0.00)",
+          "oklch(95.00% 0.00000 0.00)"
+        ]
+      },
+      "surface-subtle": {
+        "role": "neutral",
+        "displayName": "Subtle warm surface",
+        "tonalRamp": [
+          "oklch(15.00% 0.00543 95.10)",
+          "oklch(26.43% 0.00543 95.10)",
+          "oklch(37.86% 0.00543 95.10)",
+          "oklch(49.29% 0.00543 95.10)",
+          "oklch(60.71% 0.00543 95.10)",
+          "oklch(72.14% 0.00543 95.10)",
+          "oklch(83.57% 0.00543 95.10)",
+          "oklch(95.00% 0.00543 95.10)"
+        ]
+      },
+      "sidebar": {
+        "role": "neutral",
+        "displayName": "Warm navigation",
+        "tonalRamp": [
+          "oklch(15.00% 0.00543 95.10)",
+          "oklch(26.43% 0.00543 95.10)",
+          "oklch(37.86% 0.00543 95.10)",
+          "oklch(49.29% 0.00543 95.10)",
+          "oklch(60.71% 0.00543 95.10)",
+          "oklch(72.14% 0.00543 95.10)",
+          "oklch(83.57% 0.00543 95.10)",
+          "oklch(95.00% 0.00543 95.10)"
+        ]
+      },
+      "tray": {
+        "role": "neutral",
+        "displayName": "Warm collection tray",
+        "tonalRamp": [
+          "oklch(15.00% 0.00541 95.10)",
+          "oklch(26.43% 0.00541 95.10)",
+          "oklch(37.86% 0.00541 95.10)",
+          "oklch(49.29% 0.00541 95.10)",
+          "oklch(60.71% 0.00541 95.10)",
+          "oklch(72.14% 0.00541 95.10)",
+          "oklch(83.57% 0.00541 95.10)",
+          "oklch(95.00% 0.00541 95.10)"
+        ]
+      },
+      "border": {
+        "role": "neutral",
+        "displayName": "Quiet border",
+        "tonalRamp": [
+          "oklch(15.00% 0.00680 97.36)",
+          "oklch(26.43% 0.00680 97.36)",
+          "oklch(37.86% 0.00680 97.36)",
+          "oklch(49.29% 0.00680 97.36)",
+          "oklch(60.71% 0.00680 97.36)",
+          "oklch(72.14% 0.00680 97.36)",
+          "oklch(83.57% 0.00680 97.36)",
+          "oklch(95.00% 0.00680 97.36)"
+        ]
+      },
+      "text": {
+        "role": "neutral",
+        "displayName": "Primary ink",
+        "tonalRamp": [
+          "oklch(15.00% 0.00572 236.75)",
+          "oklch(26.43% 0.00572 236.75)",
+          "oklch(37.86% 0.00572 236.75)",
+          "oklch(49.29% 0.00572 236.75)",
+          "oklch(60.71% 0.00572 236.75)",
+          "oklch(72.14% 0.00572 236.75)",
+          "oklch(83.57% 0.00572 236.75)",
+          "oklch(95.00% 0.00572 236.75)"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Supporting ink",
+        "tonalRamp": [
+          "oklch(15.00% 0.00288 165.00)",
+          "oklch(26.43% 0.00288 165.00)",
+          "oklch(37.86% 0.00288 165.00)",
+          "oklch(49.29% 0.00288 165.00)",
+          "oklch(60.71% 0.00288 165.00)",
+          "oklch(72.14% 0.00288 165.00)",
+          "oklch(83.57% 0.00288 165.00)",
+          "oklch(95.00% 0.00288 165.00)"
+        ]
+      },
+      "success": {
+        "role": "semantic",
+        "displayName": "Positive green",
+        "tonalRamp": [
+          "oklch(15.00% 0.09649 157.89)",
+          "oklch(26.43% 0.09649 157.89)",
+          "oklch(37.86% 0.09649 157.89)",
+          "oklch(49.29% 0.09649 157.89)",
+          "oklch(60.71% 0.09649 157.89)",
+          "oklch(72.14% 0.09649 157.89)",
+          "oklch(83.57% 0.09649 157.89)",
+          "oklch(95.00% 0.09649 157.89)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Page heading",
+        "purpose": "A clear introduction to the active workshop task."
+      },
+      "headline": {
+        "displayName": "Section heading",
+        "purpose": "Working-area titles and toolbar hierarchy."
+      },
+      "title": {
+        "displayName": "Perspective title",
+        "purpose": "Names of lenses and form sections."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Readable idea content and form values."
+      },
+      "control": {
+        "displayName": "Control",
+        "purpose": "Standard action labels."
+      },
+      "label": {
+        "displayName": "Metadata",
+        "purpose": "Compact category and ingredient labels."
+      },
+      "supporting": {
+        "displayName": "Supporting text",
+        "purpose": "Axioms, form explanations, and compact controls."
+      },
+      "compact": {
+        "displayName": "Compact metadata",
+        "purpose": "Idea-node labels, badges, and small contextual annotations."
+      }
+    },
+    "shadows": [
+      {
+        "name": "collected-item",
+        "value": "0 2px 8px #333a3110",
+        "purpose": "A small lift for selected items in the tray."
+      },
+      {
+        "name": "canvas-controls",
+        "value": "0 2px 10px #333a3115",
+        "purpose": "Separate floating controls from the idea canvas."
+      },
+      {
+        "name": "dialog",
+        "value": "0 20px 80px #1c2c1b30",
+        "purpose": "Separate a modal task from the workspace."
+      },
+      {
+        "name": "drawer",
+        "value": "-15px 0 70px #24331b25",
+        "purpose": "Separate the evaluation drawer from the underlying page."
+      }
+    ],
+    "motion": [
+      {
+        "name": "control-feedback",
+        "value": "160ms ease-out",
+        "purpose": "Background, color, border, and shadow state feedback."
+      },
+      {
+        "name": "perspective-entry",
+        "value": "180ms",
+        "purpose": "Short card entry transition."
+      },
+      {
+        "name": "canvas-fit",
+        "value": "300ms; 0ms with prefers-reduced-motion",
+        "purpose": "Fit concepts into view while honoring reduced-motion preference."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "CSS animation and transition duration 0.01ms; animated edges disabled",
+        "purpose": "Retain state feedback without animated movement."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "wide-grid",
+        "value": "min-width: 1650px"
+      },
+      {
+        "name": "narrow-workspace",
+        "value": "max-width: 1249px"
+      },
+      {
+        "name": "collapsible-navigation",
+        "value": "max-width: 999px"
+      },
+      {
+        "name": "mobile-stack",
+        "value": "max-width: 700px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The main next action in a workshop stage.",
+      "html": "<button class=\"ds-primary\">Plant idea tree</button>",
+      "css": ".ds-primary{font-family:var(--font-sans,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif);font-size:13px;font-weight:550;min-height:40px;padding:9px 14px;border:1px solid transparent;border-radius:8px;background:var(--accent,#2864d8);color:#fff;cursor:pointer;transition:background .16s ease-out;}.ds-primary:hover{background:var(--accent-hover,#1c52bc);}.ds-primary:focus-visible{outline:3px solid #2864d880;outline-offset:3px;}.ds-primary:active{transform:translateY(1px);}.ds-primary:disabled{background:#e5e7e9;color:#81858c;cursor:not-allowed;}"
+    },
+    {
+      "name": "Secondary button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "A supporting action such as loading a preset or inviting collaborators.",
+      "html": "<button class=\"ds-secondary\">Invite team</button>",
+      "css": ".ds-secondary{font-family:var(--font-sans,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif);font-size:13px;font-weight:500;min-height:40px;padding:9px 14px;border:1px solid #dedfdc;border-radius:8px;background:#fff;color:var(--text,#242729);cursor:pointer;transition:background .16s ease-out,border-color .16s ease-out;}.ds-secondary:hover{background:#f2f3f1;border-color:#cacdc7;}.ds-secondary:focus-visible{outline:3px solid #2864d880;outline-offset:3px;}.ds-secondary:active{transform:translateY(1px);}"
+    },
+    {
+      "name": "Icon button",
+      "kind": "button",
+      "description": "A compact familiar control with a full hit area.",
+      "html": "<button class=\"ds-icon\" aria-label=\"Add ingredient\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" aria-hidden=\"true\"><path d=\"M12 5v14M5 12h14\"/></svg></button>",
+      "css": ".ds-icon{display:inline-grid;place-items:center;width:36px;height:36px;border:0;border-radius:8px;background:transparent;color:var(--muted,#6e706f);cursor:pointer;transition:background .16s ease-out,color .16s ease-out;}.ds-icon:hover{background:#eaece8;color:var(--text,#242729);}.ds-icon:focus-visible{outline:3px solid #2864d880;outline-offset:3px;}.ds-icon:active{transform:translateY(1px);}"
+    },
+    {
+      "name": "Search field",
+      "kind": "input",
+      "refersTo": "search-field",
+      "description": "A quiet search control with an explicit accessible label.",
+      "html": "<label class=\"ds-search\"><svg width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/></svg><input aria-label=\"Search perspectives\" placeholder=\"Find a perspective…\" /></label>",
+      "css": ".ds-search{display:flex;align-items:center;gap:8px;padding:0 11px;max-width:250px;background:#fff;border:1px solid #e3e4de;border-radius:8px;color:#7b8079;}.ds-search:hover{border-color:#cacdc7;}.ds-search:focus-within{border-color:#85a7ea;box-shadow:0 0 0 3px #2864d810;}.ds-search input{font-family:var(--font-sans,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif);font-size:12px;min-height:37px;width:100%;padding:8px 0;border:0;outline:0;background:none;color:var(--text,#242729);}.ds-search input::placeholder{color:var(--muted,#6e706f);opacity:1;}"
+    },
+    {
+      "name": "Stage navigation",
+      "kind": "nav",
+      "description": "A familiar stage list with a pale blue current location.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Workshop stages\"><button class=\"ds-nav-item\">Briefing</button><button class=\"ds-nav-item ds-current\" aria-current=\"step\">Perspectives</button><button class=\"ds-nav-item\">Idea tree</button></nav>",
+      "css": ".ds-nav{font-family:var(--font-sans,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif);width:188px;padding:8px;background:#f0efeb;}.ds-nav-item{display:block;width:100%;text-align:left;font:inherit;font-size:13px;min-height:42px;padding:11px 12px;margin:4px 0;border:0;border-radius:8px;background:transparent;color:#646864;cursor:pointer;transition:background .16s ease-out;}.ds-nav-item:hover{background:#e7e6e1;color:var(--text,#242729);}.ds-nav-item.ds-current{background:#e1e7f1;color:#2658ab;font-weight:550;}.ds-nav-item:focus-visible{outline:3px solid #2864d880;outline-offset:3px;}.ds-nav-item:active{transform:translateY(1px);}"
+    },
+    {
+      "name": "Category filter",
+      "kind": "chip",
+      "description": "A category filter that keeps color subordinate to the content.",
+      "html": "<div class=\"ds-chips\"><button class=\"ds-chip ds-active\" aria-pressed=\"true\">All perspectives</button><button class=\"ds-chip\" aria-pressed=\"false\"><span class=\"ds-dot\" aria-hidden=\"true\"></span>Systems</button></div>",
+      "css": ".ds-chips{display:flex;gap:3px;font-family:var(--font-sans,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif);}.ds-chip{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:7px 10px;border:0;border-radius:7px;font:inherit;font-size:12px;background:transparent;color:var(--muted,#6e706f);cursor:pointer;transition:background .16s ease-out;}.ds-chip:hover{background:#eeeee9;color:var(--text,#242729);}.ds-chip.ds-active{background:#e9eae5;color:var(--text,#242729);font-weight:500;}.ds-chip:focus-visible{outline:3px solid #2864d880;outline-offset:3px;}.ds-chip:active{transform:translateY(1px);}.ds-dot{width:5px;height:5px;border-radius:50%;background:#6b94b1;}"
+    },
+    {
+      "name": "Perspective card",
+      "kind": "card",
+      "refersTo": "perspective-card",
+      "description": "A flat white grouping for a lens and its ingredient rows.",
+      "html": "<article class=\"ds-card\" tabindex=\"0\"><span class=\"ds-category\">Systems lens</span><h3>Fault Injection Engineer</h3><p>A system’s real character appears when a dependency fails.</p><div class=\"ds-row\"><span>Provocation</span><p>What if daily admin needed a circuit breaker?</p></div></article>",
+      "css": ".ds-card{font-family:var(--font-sans,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif);max-width:340px;padding:21px 20px 12px;background:#fff;color:var(--text,#242729);border:1px solid #e4e5df;border-radius:14px;transition:border-color .18s ease-out;}.ds-card:hover{border-color:#cfd3cb;}.ds-card:focus-visible{outline:3px solid #2864d880;outline-offset:3px;}.ds-category,.ds-row>span{font-size:11px;color:var(--muted,#6e706f);}.ds-card h3{font-size:17px;font-weight:600;line-height:1.3;letter-spacing:-.3px;margin:1px 0 0;}.ds-card>p{font-size:12px;line-height:1.65;color:var(--muted,#6e706f);margin:16px 0 12px;}.ds-row{border-top:1px solid #edeee9;padding:14px 0 15px;}.ds-row p{font-size:14px;line-height:1.6;color:#424844;margin:7px 0 0;}"
+    },
+    {
+      "name": "Selected ingredient",
+      "kind": "custom",
+      "refersTo": "ingredient-selected",
+      "description": "Selection combines a pale blue surface with a visible check.",
+      "html": "<button class=\"ds-ingredient\" aria-pressed=\"true\"><span class=\"ds-label\">Mechanic</span><span class=\"ds-copy\">Detect overload and collapse the workflow to one safe next action.</span><span class=\"ds-check\" aria-hidden=\"true\"><svg width=\"13\" height=\"13\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"m5 12 4 4L19 6\"/></svg></span></button>",
+      "css": ".ds-ingredient{font-family:var(--font-sans,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif);position:relative;display:flex;flex-direction:column;max-width:340px;min-height:103px;padding:14px 34px 15px 8px;border:1px solid transparent;border-radius:7px;text-align:left;background:var(--accent-soft,#edf3ff);cursor:pointer;transition:background .15s ease-out;}.ds-ingredient:hover{border-color:#9ab4e5;}.ds-ingredient:focus-visible{outline:3px solid #2864d880;outline-offset:3px;}.ds-ingredient:active{transform:translateY(1px);}.ds-label{font-size:11px;font-weight:450;color:#4e6da1;}.ds-copy{font-size:14px;line-height:1.6;color:#254779;margin-top:7px;}.ds-check{position:absolute;right:8px;top:45px;display:grid;place-items:center;width:19px;height:19px;border-radius:50%;background:var(--accent,#2864d8);color:#fff;}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Light Apple-style workspace",
+    "overview": "Warm white surfaces, generous spacing, and restrained color express the direction selected by the user. The interface is a working environment: readable ideas and clear actions take precedence over decoration. System typography and familiar controls make the workspace feel calm and direct.\n\nOne reusable system covers the briefing forms, perspectives, idea canvas, evaluation panels, settings, and invitations. The page heading introduces the current task without decorative orbit artwork or a separate promotional hero.",
+    "keyCharacteristics": [
+      "Warm surfaces and dark, readable type.",
+      "Blue for primary actions, focus, and selection.",
+      "Spacious cards with simple ingredient rows.",
+      "Familiar controls and restrained, accessible motion."
+    ],
+    "rules": [],
+    "dos": [
+      "Do keep the same warm surfaces, system typography, and blue action language across every stage.",
+      "Do use space, type weight, and clear grouping before adding more borders.",
+      "Do preserve visible keyboard focus, touch-accessible controls, and reduced-motion behavior.",
+      "Do keep category colors secondary to reading and selection."
+    ],
+    "donts": [
+      "Don't restore decorative orbit illustrations or promotional hero artwork to the workspace.",
+      "Don't shrink idea text to make more columns fit.",
+      "Don't nest raised cards around each ingredient row.",
+      "Don't use saturated color across large resting surfaces."
+    ]
+  }
+}

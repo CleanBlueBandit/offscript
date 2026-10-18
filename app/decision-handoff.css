@@ -1,0 +1,82 @@
+.decision-handoff {
+  border-top: 1px solid var(--line);
+  margin-top: 36px;
+  padding-top: 30px;
+  min-width: 0;
+}
+.decision-handoff h2 {
+  font-size: 21px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -.4px;
+}
+.decision-handoff h3 {
+  font-size: 17px;
+  line-height: 1.4;
+  font-weight: 600;
+  letter-spacing: -.25px;
+}
+.handoff-intro {
+  color: var(--muted);
+  margin-top: 8px;
+  max-width: 72ch;
+  line-height: 1.65;
+}
+.handoff-intro strong { color: var(--text); font-weight: 500; }
+.handoff-heading-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; }
+.handoff-confirmed { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; font-size: 12px; color: #275d42; padding-top: 5px; }
+.handoff-decision-form { margin-top: 26px; }
+.handoff-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+.handoff-fields label, .handoff-build-controls label { display: flex; flex-direction: column; gap: 7px; font-size: 13px; font-weight: 500; min-width: 0; }
+.handoff-field-wide { grid-column: 1 / -1; }
+.handoff-fields textarea, .handoff-build-controls select {
+  width: 100%;
+  min-height: 40px;
+  padding: 11px 12px;
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid #d7d9d4;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.6;
+  caret-color: var(--accent);
+}
+.handoff-fields textarea { resize: vertical; min-height: 98px; }
+.handoff-fields small { color: var(--muted); font-weight: 400; line-height: 1.5; font-size: 12px; }
+.handoff-confirm-row { display: flex; align-items: center; gap: 16px; margin: 22px 0 30px; }
+.handoff-confirm-row p { color: var(--muted); font-size: 12px; max-width: 65ch; line-height: 1.6; }
+.handoff-build-area { padding-top: 26px; border-top: 1px solid var(--line); }
+.handoff-build-area > div > p, .handoff-output-heading p { margin-top: 6px; color: var(--muted); font-size: 13px; line-height: 1.65; max-width: 75ch; }
+.handoff-build-controls { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; margin-top: 20px; }
+.handoff-build-controls label { min-width: 190px; }
+.handoff-build-controls select { padding: 8px 32px 8px 11px; min-height: 42px; font-size: 13px; }
+.handoff-build-controls > button { min-height: 42px; }
+.handoff-mode-note { color: var(--muted); font-size: 12px; line-height: 1.6; max-width: 80ch; margin-top: 13px; }
+.handoff-error { margin-top: 18px; padding: 13px 15px; color: #805315; background: #fff3e3; border-radius: 8px; font-size: 13px; line-height: 1.6; }
+.handoff-loading { margin-top: 18px; color: var(--muted); font-size: 13px; }
+.handoff-output { margin-top: 28px; border-top: 1px solid var(--line); padding-top: 24px; }
+.handoff-output-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 22px; }
+.handoff-export-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.handoff-preview { margin-top: 20px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: clip; }
+.handoff-preview > summary { cursor: pointer; padding: 15px 18px; font-size: 13px; font-weight: 500; }
+.handoff-prompt-text { max-height: 560px; overflow-y: auto; padding: 0 22px 24px; scrollbar-color: #b9bcb9 var(--panel2); overflow-wrap: anywhere; font-size: 13px; line-height: 1.7; }
+.handoff-prompt-text h4 { margin: 26px 0 9px; font-size: 15px; font-weight: 600; }
+.handoff-prompt-text h5 { margin: 16px 0 5px; font-size: 13px; font-weight: 600; }
+.handoff-prompt-text p { margin: 7px 0; max-width: 82ch; white-space: pre-wrap; }
+.handoff-prompt-text .handoff-prompt-title { font-size: 19px; margin-top: 10px; }
+.handoff-quoted { color: #555b58; }
+.handoff-prompt-text:focus-visible { outline: 3px solid #2864d880; outline-offset: -3px; }
+.decision-handoff ::selection { background: #dce8ff; color: #1f3356; }
+@media (max-width: 1100px) {
+  .handoff-heading-row, .handoff-output-heading { flex-direction: column; gap: 12px; }
+}
+@media (max-width: 650px) {
+  .handoff-fields { grid-template-columns: minmax(0, 1fr); gap: 19px; }
+  .handoff-confirm-row { align-items: flex-start; flex-direction: column; gap: 10px; }
+  .handoff-build-controls { flex-direction: column; align-items: stretch; }
+  .handoff-export-actions { flex-wrap: wrap; width: 100%; }
+  .handoff-export-actions > button { flex: 1; }
+  .handoff-prompt-text { padding: 0 16px 20px; max-height: 440px; }
+  .decision-handoff h2 { font-size: 20px; }
+}
