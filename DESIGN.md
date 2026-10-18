@@ -107,6 +107,7 @@ Warm white surfaces, generous spacing, and restrained color express the directio
 
 One reusable system covers the briefing forms, perspectives, idea canvas, evaluation panels, settings, and invitations. The page heading introduces the current task without decorative orbit artwork or a separate promotional hero.
 
+
 **Key Characteristics:**
 - Warm surfaces and dark, readable type.
 - Blue for primary actions, focus, and selection.
