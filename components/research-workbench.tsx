@@ -19,9 +19,9 @@ function safeLink(value: string) {
   } catch { return undefined; }
 }
 
-export function ResearchWorkbench({ research = emptyResearch, configured, onUpdate, onStartBrief, onContinue }: {
+export function ResearchWorkbench({ research = emptyResearch, onUpdate, onStartBrief, onContinue }: {
   research?: ResearchState;
-  configured: boolean;
+  configured?: boolean;
   onUpdate: (change: (current: ResearchState) => ResearchState) => void;
   onStartBrief: (evidence: ResearchEvidence) => void;
   onContinue: () => void;
@@ -106,7 +106,7 @@ export function ResearchWorkbench({ research = emptyResearch, configured, onUpda
         </label>
       </details>}
       <div className="research-submit-row">
-        <p>{configured ? "Public web search provides source-linked leads from real sources." : "Search public sources for real ideas."}</p>
+        <p>Gemini searches Google and cites the sources behind every finding.</p>
         <button className="button button-lime" type="submit" disabled={pending || query.trim().length < 3}>
           {pending ? <Loader2 size={16} className="spin" /> : <Search size={16} />}
           {pending ? "Finding ideas…" : mode === "urls" ? "Find ideas on these sites" : "Find ideas"}
@@ -122,7 +122,7 @@ export function ResearchWorkbench({ research = emptyResearch, configured, onUpda
         </div>
         {run ? <>
           <p className="research-summary">{run.summary}</p>
-          <p className="research-meta">{run.source === "demo" ? "Illustrative example" : run.engine === "public-web" ? "Live web results · DuckDuckGo" : "AI research"} · {run.sources.length} sources · {new Date(run.createdAt).toLocaleDateString()}</p>
+          <p className="research-meta">{run.source === "demo" ? "Illustrative example" : run.engine === "public-web" ? "Live web results · DuckDuckGo" : "Gemini + Google Search"} · {run.sources.length} sources · {new Date(run.createdAt).toLocaleDateString()}</p>
           {run.limitations.length > 0 && <details className="research-limitations"><summary>Research limits and missing information</summary><ul>{run.limitations.map((item, i) => <li key={i}>{item}</li>)}</ul></details>}
           <div className="research-findings">{run.findings.map((finding) => {
             const saved = research.saved.some((item) => item.id === finding.id);

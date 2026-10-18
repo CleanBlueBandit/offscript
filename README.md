@@ -70,7 +70,7 @@ A workshop invitation grants access to a room only after the visitor passes the 
 
 ## Research and coding-agent handoff
 
-**Research** sits above Briefing. Explore the web, past hackathons, or up to five public website URLs. Live research uses DuckDuckGo public search and returns source-linked idea leads. Search-only sources are labeled separately from retrieved pages. Save up to twelve findings; their sources travel with the brief, concept generation, and build prompt. Public access restrictions and provider limits may prevent retrieval. Research always searches real sources, independently of the workshop generation mode. Public search returns clearly labeled idea leads with source titles, snippets, and URLs. These leads do not claim to have extracted the full page or its mechanism. Older demo results remain labeled as illustrative.
+**Research** sits above Briefing. Explore the web, past hackathons, or up to five public website URLs. Live research uses Gemini with Google Search grounding, called through the Vercel AI SDK. It needs `AI_GATEWAY_API_KEY` (Vercel AI Gateway; automatic on Vercel) or `GOOGLE_GENERATIVE_AI_API_KEY`, and fails explicitly without one. No scraping or third-party search API is used. Sources Gemini cited for a statement are labeled as reviewed; other returned sources are labeled search-only. Save up to twelve findings; their sources travel with the brief, concept generation, and build prompt. Public access restrictions and provider limits may prevent retrieval. Research always searches real sources, independently of the workshop generation mode. Every finding cites only sources Google returned in that run, and Google's search suggestions are shown with the results. Offscript does not open the pages itself, so findings are Gemini's reading and should be confirmed at the source. Older demo and DuckDuckGo results saved in existing workshops remain labeled as before.
 
 In **Decide & build**, save a team choice, then explicitly confirm the final problem, target user, solution, rationale, and success criteria. Create a detailed prompt for Codex, Claude Code, or any coding agent. It includes MVP scope, non-goals, user flows, screens, architecture, data models, API contracts, integration/mock boundaries, implementation milestones, acceptance criteria, tests, edge cases, accessibility, security, and source references. Copy it or download Markdown. Input changes mark previous prompts as outdated and disable export until regeneration.
 
@@ -100,7 +100,7 @@ The log generates no research results or quality claims. It stores up to 100 use
 
 - Next.js App Router, React, TypeScript, Tailwind CSS, Lucide, and Framer Motion.
 - React Flow (`@xyflow/react`) for the interactive concept tree.
-- Official `@google/genai` SDK; structured generation uses JSON schemas and server-side validation. Research first retrieves provider-grounded text and citation metadata, then performs schema-validated extraction.
+- Official `@google/genai` SDK; structured generation uses JSON schemas and server-side validation. Research first retrieves provider-grounded text and citation metadata via the Vercel AI SDK, then performs schema-validated extraction.
 - Drizzle/SQLite schema for hosted Cloudflare D1 room persistence.
 
 | Location                                                         | Responsibility                                                        |

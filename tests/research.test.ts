@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { parsePublicSearchResults, researchDemo, researchPublicWeb, researchWithFallback, withResearchDeadline } from "../lib/research";
+import { researchDemo, researchLive, withResearchDeadline, type ModelCall, type ModelReply } from "../lib/research";
 import {
   normalizePublicUrl,
   researchEvidenceSchema,
@@ -88,77 +88,97 @@ test("hard deadline aborts a hanging provider and still rejects when the provide
   assert.equal(await withResearchDeadline(async () => "ready", 100), "ready");
 });
 
-const resultMarkup = (url = sourceUrl, title = "Pantry Exchange", snippet = "A project connecting nearby households with surplus pantry items.") =>
-  `<div><a class="result__a" href="//duckduckgo.com/l/?uddg=${encodeURIComponent(url)}&amp;rut=search-reference">${title}</a><a class="result__snippet">${snippet}</a></div>`;
+const redirect = "https://vertexaisearch.cloud.google.com/grounding-api-redirect/abc123";
+const grounding = {
+  webSearchQueries: ["pantry surplus sharing hackathon"],
+  searchEntryPoint: { renderedContent: "<div>Google Search suggestions</div>" },
+  groundingChunks: [
+    { web: { uri: redirect, title: "devpost.com" } },
+    { web: { uri: "http://127.0.0.1/private", title: "local" } },
+    { web: { uri: "https://example.com/?token=secret", title: "leaky" } },
+    { web: { uri: `${redirect}-2`, title: "unsupported.org" } },
+  ],
+  groundingSupports: [{ segment: { text: excerpt }, groundingChunkIndices: [0, 1, 2] }],
+};
 
-test("public search parsing keeps real source links and snippets while discarding unsafe and scripted results", () => {
-  const parsed = parsePublicSearchResults([
-    `<script>${resultMarkup("https://example.com/forged")}</script>`,
-    `<!-- ${resultMarkup("https://example.com/comment")} -->`,
-    resultMarkup(sourceUrl, "Pantry &amp; Exchange", "A <b>project</b> connecting donors &#38; nearby households."),
-    resultMarkup(sourceUrl), resultMarkup("http://127.0.0.1/private"),
-    resultMarkup("https://example.com/?token=private"), resultMarkup("javascript:alert(1)"),
-    resultMarkup("https://example.com/empty", "Empty", ""),
-  ].join("\n"));
-  assert.deepEqual(parsed, [{ title: "Pantry & Exchange", url: sourceUrl, snippet: "A project connecting donors & nearby households." }]);
-  assert.throws(() => parsePublicSearchResults("x".repeat(512 * 1024 + 1)), (error) => error instanceof ApiError && error.code === "PUBLIC_SEARCH_TOO_LARGE");
-});
-
-async function withMockPublicFetch<T>(reply: (request: Request) => Response | Promise<Response>, run: () => Promise<T>) {
-  const original = globalThis.fetch;
-  globalThis.fetch = async (input, init) => reply(new Request(input, init));
-  try { return await run(); }
-  finally { globalThis.fetch = original; }
+/** Records every call and replies from a script, so no test can reach a real provider. */
+function scripted(replies: Array<ModelReply | Error>) {
+  const calls: ModelCall[] = [];
+  const runner = async (call: ModelCall) => {
+    calls.push(call);
+    const next = replies.shift();
+    if (!next) throw new Error("unexpected extra model call");
+    if (next instanceof Error) throw next;
+    return next;
+  };
+  return { calls, runner };
 }
+const json = (value: unknown): ModelReply => ({ text: JSON.stringify(value) });
 
-test("public web fallback fetches only its fixed search origin and labels snippets as unextracted ideas", async () => {
-  const requested: string[] = [];
-  await withMockPublicFetch((request) => {
-    requested.push(request.url);
-    assert.equal(new URL(request.url).origin, "https://html.duckduckgo.com");
-    assert.equal(request.redirect, "manual");
-    return new Response(resultMarkup(), { headers: { "content-type": "text/html" } });
-  }, async () => {
-    const run = await researchPublicWeb({ ...input, mode: "urls", urls: [sourceUrl] }, "Gemini's research quota is exhausted");
-    assert.equal(requested.length, 1);
-    assert.ok(new URL(requested[0]).searchParams.get("q")?.includes("site:devpost.com/software/pantry-exchange"));
-    assert.equal(run.engine, "public-web");
-    assert.equal(run.source, "live");
-    assert.equal(run.sources[0].url, sourceUrl);
-    assert.equal(run.sources[0].access, "search");
-    assert.equal(run.findings[0].kind, "idea");
-    assert.equal(run.findings[0].feature, "A project connecting nearby households with surplus pantry items.");
-    assert.ok(run.findings[0].howItWorks.includes("not extracted"));
-    assert.ok(run.summary.includes("DuckDuckGo"));
-    assert.ok(run.limitations.some((item) => item.includes("did not scrape")));
-    assert.equal(researchRunSchema.safeParse({ ...run, sources: [{ ...run.sources[0], access: "retrieved" }] }).success, false);
-  });
+test("grounded research keeps only public cited sources, labels them honestly and attaches Google attribution", async () => {
+  const { calls, runner } = scripted([{ text: "Notes about Pantry Exchange.", grounding }, json({ ...extraction, findings: [{ ...extraction.findings[0], sourceIds: ["source-1"] }] })]);
+  const run = await researchLive(input, runner);
+  assert.equal(calls.length, 2);
+  assert.ok(calls[0].search && !calls[0].search.urlContext, "step 1 is search-grounded");
+  assert.equal(calls[1].search, undefined, "step 2 is ungrounded structured extraction");
+  assert.equal(run.source, "live");
+  assert.equal(run.engine, "gemini");
+  assert.deepEqual(run.sources.map((source) => source.id), ["source-1", "source-2"]);
+  assert.equal(run.sources[0].access, "retrieved", "a source that backs a sentence counts as reviewed");
+  assert.equal(run.sources[0].kind, "hackathon");
+  assert.equal(run.sources[0].summary, excerpt);
+  assert.equal(run.sources[1].access, "search", "a source that backs nothing stays search-only");
+  assert.deepEqual(run.searchQueries, ["pantry surplus sharing hackathon"]);
+  assert.equal(run.searchEntryPoint, "<div>Google Search suggestions</div>");
+  assert.ok(run.limitations.some((item) => item.includes("did not open these pages")));
+  assert.equal(researchRunSchema.safeParse(run).success, true);
 });
 
-test("public search fails clearly on challenges, oversized bodies and unrelated URL results", async () => {
-  for (const response of [
-    new Response("Redirect", { status: 302, headers: { location: "http://127.0.0.1/private" } }),
-    new Response("Browser verification", { status: 202 }),
-    new Response("x".repeat(512 * 1024 + 1)),
-    new Response('<form id="challenge-form">Verify</form>'),
-    new Response(resultMarkup("https://unrelated.example.com/project")),
-  ]) {
-    await withMockPublicFetch(() => response.clone(), async () => {
-      await assert.rejects(researchPublicWeb({ ...input, mode: "urls", urls: [sourceUrl] }),
-        (error) => error instanceof ApiError && error.status === 502);
-    });
-  }
+test("URL mode turns on URL context and reports pages Gemini could not read", async () => {
+  const { calls, runner } = scripted([
+    { text: "Notes.", grounding, urls: [{ retrievedUrl: sourceUrl, urlRetrievalStatus: "URL_RETRIEVAL_STATUS_ERROR" }] },
+    json(extraction),
+  ]);
+  const run = await researchLive({ ...input, mode: "urls", urls: [sourceUrl] }, runner);
+  assert.equal(calls[0].search?.urlContext, true);
+  assert.ok(calls[0].prompt.includes(sourceUrl));
+  assert.ok(run.limitations.some((item) => item.includes("could not read")));
 });
 
-test("live research goes straight to public web search without calling any model provider", async () => {
-  const origins: string[] = [];
-  await withMockPublicFetch((request) => {
-    origins.push(new URL(request.url).origin);
-    return new Response(resultMarkup());
-  }, async () => {
-    const run = await researchWithFallback(input);
-    assert.equal(run.source, "live");
-    assert.equal(run.engine, "public-web");
-    assert.deepEqual(origins, ["https://html.duckduckgo.com"]);
-  });
+test("research fails clearly instead of presenting uncited or ungrounded text", async () => {
+  for (const reply of [
+    { text: "Plain answer with no grounding." },
+    { text: "Notes", grounding: { groundingChunks: grounding.groundingChunks } },
+    { text: "Notes", grounding: { ...grounding, groundingChunks: [{ web: { uri: "http://127.0.0.1/x", title: "x" } }] } },
+  ]) await assert.rejects(researchLive(input, scripted([reply]).runner),
+    (error) => error instanceof ApiError && error.code === "RESEARCH_NO_SOURCES");
+});
+
+test("extraction retries once with the validation error, then gives up rather than inventing citations", async () => {
+  const invented = json({ ...extraction, findings: [{ ...extraction.findings[0], sourceIds: ["source-99"] }] });
+  const retry = scripted([{ text: "Notes", grounding }, invented, json(extraction)]);
+  const run = await researchLive(input, retry.runner);
+  assert.equal(retry.calls.length, 3);
+  assert.ok(retry.calls[2].prompt.includes("previous reply was rejected"));
+  assert.deepEqual(run.findings[0].sourceIds, ["source-1"]);
+  await assert.rejects(researchLive(input, scripted([{ text: "Notes", grounding }, invented, invented]).runner),
+    (error) => error instanceof ApiError && error.code === "RESEARCH_EXTRACTION_FAILED");
+});
+
+test("provider failures map to clear, key-free errors", async () => {
+  for (const [statusCode, status, code] of [[429, 429, "RESEARCH_RATE_LIMITED"], [403, 503, "RESEARCH_ACCESS_DENIED"], [500, 502, "RESEARCH_PROVIDER_ERROR"]] as const)
+    await assert.rejects(researchLive(input, scripted([Object.assign(new Error("secret-key-123 rejected"), { statusCode })]).runner),
+      (error) => error instanceof ApiError && error.status === status && error.code === code && !error.message.includes("secret-key-123"));
+});
+
+test("live research without a server credential fails explicitly and never falls back to another search engine", async () => {
+  const saved = { ...process.env };
+  for (const key of ["AI_GATEWAY_API_KEY", "VERCEL_OIDC_TOKEN", "VERCEL", "GOOGLE_GENERATIVE_AI_API_KEY"]) delete process.env[key];
+  const original = globalThis.fetch;
+  let fetched = 0;
+  globalThis.fetch = async () => { fetched++; return new Response("{}"); };
+  try {
+    await assert.rejects(researchLive(input), (error) => error instanceof ApiError && error.code === "RESEARCH_NOT_CONFIGURED" && error.status === 503);
+    assert.equal(fetched, 0);
+  } finally { globalThis.fetch = original; Object.assign(process.env, saved); }
 });
